@@ -308,7 +308,7 @@ class Play extends Phaser.Scene {
                 ship.alpha = 1;
                 boom.destroy();                       // remove explosion sprite
             });
-            this.sound.play('sfx_explosion');
+            this.sound.play('sfx_ex1');
         }else if(explo <= 1){
             let boom = this.add.sprite(rocket.x, rocket.y, 'explo2').setOrigin(0.5, 0.5);
             rocket.reset();                           // reset ship position
@@ -317,7 +317,7 @@ class Play extends Phaser.Scene {
                 ship.alpha = 1;
                 boom.destroy();                       // remove explosion sprite
             });
-            this.sound.play('sfx_explosion');
+            this.sound.play('sfx_ex2');
         }else if(explo <= 2){
             let boom = this.add.sprite(rocket.x, rocket.y, 'explo3').setOrigin(0.5, 0.5);
             rocket.reset();                           // reset ship position
@@ -326,7 +326,7 @@ class Play extends Phaser.Scene {
                 ship.alpha = 1;
                 boom.destroy();                       // remove explosion sprite
             });
-            this.sound.play('sfx_explosion');
+            this.sound.play('sfx_ex3');
         }else{
             let boom = this.add.sprite(rocket.x, rocket.y, 'explo4').setOrigin(0.5, 0.5);
             rocket.reset();                           // reset ship position
@@ -335,7 +335,7 @@ class Play extends Phaser.Scene {
                 ship.alpha = 1;
                 boom.destroy();                       // remove explosion sprite
             });
-            this.sound.play('sfx_explosion');
+            this.sound.play('sfx_ex4');
         }
       }
 
