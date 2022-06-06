@@ -18,8 +18,8 @@ class Play extends Phaser.Scene {
         this.load.image('p2Launcher', './assets/p2Launcher.png');
         // load spritesheet
         this.load.spritesheet('explosion', './assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
-        this.load.spritesheet('p1Light', './assets/p1Launcher_light_sheet.png', {frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 8});
-        this.load.spritesheet('p2Light', './assets/p2Launcher_light_sheet.png', {frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 8});
+        this.load.spritesheet('p1Light', './assets/p1Launcher_light_sheet.png', {frameWidth: 64, frameHeight: 64, startFrame: 0, endFrame: 8});
+        this.load.spritesheet('p2Light', './assets/p2Launcher_light_sheet.png', {frameWidth: 64, frameHeight: 64, startFrame: 0, endFrame: 8});
     }
 
     create() {
@@ -35,7 +35,7 @@ class Play extends Phaser.Scene {
         this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0 ,0);
 
         // add player rockets and p1 launcher
-        this.launcher1 = this.add.sprite(game.config.width/2, game.config.height - borderUISize - borderPadding, 'p1Launcher').setOrigin(0.5, 0);
+        this.launcher1 = this.add.sprite(game.config.width/2, game.config.height - borderUISize - borderPadding - 25, 'p1Launcher').setOrigin(0.5, 0);
         this.p1Rocket = new Rocket(this, game.config.width/2, game.config.height - borderUISize - borderPadding, 'p1Firework').setOrigin(0.5, 0);
         this.p1Rocket.alpha = 0;
         this.p2Rocket = new Rocket(this, game.config.width/2, game.config.height - borderUISize - borderPadding, 'p2Firework').setOrigin(0.5, 0);
@@ -43,7 +43,7 @@ class Play extends Phaser.Scene {
 
         // add p2 launcher if necessary
         if(game.settings.multiplayer){
-            this.launcher2 = this.add.sprite(game.config.width/2, game.config.height - borderUISize - borderPadding, 'p2Launcher').setOrigin(0.5, 0);
+            this.launcher2 = this.add.sprite(game.config.width/2, game.config.height - borderUISize - borderPadding - 25, 'p2Launcher').setOrigin(0.5, 0);
         }
 
         // add Spaceships (x3)
