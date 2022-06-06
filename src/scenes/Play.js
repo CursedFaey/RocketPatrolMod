@@ -1,6 +1,8 @@
 class Play extends Phaser.Scene {
     constructor() {
         super("playScene");
+        this.launcherSpeed = 4;
+        this.firing = false;
     }
 
     preload() {
@@ -31,6 +33,7 @@ class Play extends Phaser.Scene {
         this.launcher = this.add.sprite(game.config.width/2, game.config.height - borderUISize - borderPadding, 'launcher').setOrigin(0.5, 0);
         // add Rocket (p1)
         this.p1Rocket = new Rocket(this, game.config.width/2, game.config.height - borderUISize - borderPadding, 'firework').setOrigin(0.5, 0);
+        this.p1Rocket.alpha = 0;
 
         // add Spaceships (x3)
         this.ship01 = new Spaceship(this, game.config.width + borderUISize*6, borderUISize*4, 'spaceship', 0, 30).setOrigin(0, 0);
@@ -99,6 +102,14 @@ class Play extends Phaser.Scene {
             this.launchFirework();
         }
 
+        if(!this.p1Rocket.isFiring && !this.gameOver && !this.firing) {
+            if(keyLEFT.isDown && this.launcher.x >= borderUISize + this.launcher.width) {
+                this.launcher.x -= this.launcherSpeed;
+            } else if (keyRIGHT.isDown && this.launcher.x <= game.config.width - borderUISize - this.launcher.width) {
+                this.launcher.x += this.launcherSpeed;
+            }
+        }
+
         this.starfield.tilePositionX -= 4;  // update tile sprite
 
         if(!this.gameOver) {
@@ -155,13 +166,18 @@ class Play extends Phaser.Scene {
 
       launchFirework() {
         // temporarily hide ship   
-        this.p1Rocket.alpha = 0;                   
+        this.p1Rocket.alpha = 0;
+        this.firing = true;
+        //this.p1Rocket.isFiring = true;
+        this.p1Rocket.x = this.launcher.x;
+        this.p1Rocket.y = this.launcher.y;                
         // create explosion sprite at ship's position
-        let launch = this.add.sprite(this.p1Rocket.x, this.p1Rocket.y, 'lightF').setOrigin(0.5, 0);
+        let launch = this.add.sprite(this.launcher.x, this.launcher.y, 'lightF').setOrigin(0.5, 0);
         launch.anims.play('light');             // play explode animation
         launch.on('animationcomplete', () => {    // callback after anim completes
             this.p1Rocket.alpha = 1;  
             this.p1Rocket.isFiring = true;
+            this.firing = false;
             this.p1Rocket.sfxRocket.play();
         });
       }
