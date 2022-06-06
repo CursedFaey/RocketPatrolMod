@@ -5,6 +5,7 @@ class Menu extends Phaser.Scene {
 
     preload() {
         // load audio
+        this.load.audio('background', './assets/1min-2021-10-19_-_Funny_Bit_-_www.FesliyanStudios.com.mp3');
         this.load.audio('sfx_select', './assets/select_s1.wav');
         this.load.audio('sfx_explosion', './assets/explosion38.wav');
         this.load.audio('sfx_rocket', './assets/rck_s1.wav');
@@ -51,6 +52,7 @@ class Menu extends Phaser.Scene {
             multiplayer: false    
           }
           this.sound.play('sfx_select');
+          this.sound.play('background');
           this.scene.start("playScene");    
         }
         if (Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
@@ -61,6 +63,7 @@ class Menu extends Phaser.Scene {
             multiplayer: true    
           }
           this.sound.play('sfx_select');
+          this.sound.play('background');
           this.scene.start("playScene");    
         }
       }
