@@ -34,6 +34,8 @@ class Play extends Phaser.Scene {
         // add Rocket (p1)
         this.p1Rocket = new Rocket(this, game.config.width/2, game.config.height - borderUISize - borderPadding, 'firework').setOrigin(0.5, 0);
         this.p1Rocket.alpha = 0;
+        this.p2Rocket = new Rocket(this, game.config.width/2, game.config.height - borderUISize - borderPadding, 'firework').setOrigin(0.5, 0);
+        this.p2Rocket.alpha = 0;
 
         // add Spaceships (x3)
         this.ship01 = new Spaceship(this, game.config.width + borderUISize*6, borderUISize*4, 'spaceship', 0, 30).setOrigin(0, 0);
@@ -79,6 +81,9 @@ class Play extends Phaser.Scene {
         // GAME OVER flag
         this.gameOver = false;
 
+        this.timeInSeconds = game.settings.gameTimer/1000;
+        this.timeLeft = this.add.text(borderUISize + borderPadding*6, borderUISize + borderPadding*2, this.timeInSeconds, scoreConfig);
+
         // 60-second play clock
         scoreConfig.fixedWidth = 0;
         this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
@@ -113,13 +118,14 @@ class Play extends Phaser.Scene {
         this.starfield.tilePositionX -= 4;  // update tile sprite
 
         if(!this.gameOver) {
+            this.tick();
             this.p1Rocket.update();             // update p1
             this.ship01.update();               // update spaceship (x3)
             this.ship02.update();
             this.ship03.update();
         }
 
-        // check collisions
+        // check collisions player 1
         if(this.checkCollision(this.p1Rocket, this.ship03)) {
             this.p1Rocket.reset();
             this.shipExplode(this.ship03);
@@ -131,6 +137,22 @@ class Play extends Phaser.Scene {
         if (this.checkCollision(this.p1Rocket, this.ship01)) {
             this.p1Rocket.reset();
             this.shipExplode(this.ship01);
+        }
+
+        //check collisions player 2
+        if(this.checkCollision(this.p2Rocket, this.ship03)) {
+            this.p2Rocket.reset();
+            this.shipExplode(this.ship03);
+        }
+        if (this.checkCollision(this.p2Rocket, this.ship02)) {
+            this.p2Rocket.reset();
+            this.shipExplode(this.ship02);
+        }
+        if (this.checkCollision(this.p2Rocket, this.ship01)) {
+            this.p2Rocket.reset();
+            this.shipExplode(this.ship01);
+            this.p1Score += ship.points;
+            this.scoreLeft.text = this.p1Score;
         }
     }
 
@@ -144,6 +166,12 @@ class Play extends Phaser.Scene {
         } else {
             return false;
         }
+    }
+
+    tick(){
+        this.timeInSeconds--;
+        console.log(this.timeInSeconds);
+        this.timeLeft.text = this.timeInSeconds;
     }
 
     shipExplode(ship) {
@@ -179,6 +207,7 @@ class Play extends Phaser.Scene {
             this.p1Rocket.isFiring = true;
             this.firing = false;
             this.p1Rocket.sfxRocket.play();
+            //console.log(this.clock.elapsed);
         });
       }
 }
