@@ -14,10 +14,12 @@ class Play extends Phaser.Scene {
         this.load.image('starfield', './assets/starfield.png');
         this.load.image('p1Firework', './assets/p1Firework.png');
         this.load.image('p2Firework', './assets/p2Firework.png');
-        this.load.image('launcher', './assets/firework_launcher.png');
+        this.load.image('p1Launcher', './assets/p1Launcher.png');
+        this.load.image('p2Launcher', './assets/p2Launcher.png');
         // load spritesheet
         this.load.spritesheet('explosion', './assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
-        this.load.spritesheet('lightF', './assets/light_firework.png', {frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 4});
+        this.load.spritesheet('p1Light', './assets/p1Launcher_light_sheet.png', {frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 8});
+        this.load.spritesheet('p2Light', './assets/p2Launcher_light_sheet.png', {frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 8});
     }
 
     create() {
@@ -33,7 +35,7 @@ class Play extends Phaser.Scene {
         this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0 ,0);
 
         // add player rockets and p1 launcher
-        this.launcher1 = this.add.sprite(game.config.width/2, game.config.height - borderUISize - borderPadding, 'launcher').setOrigin(0.5, 0);
+        this.launcher1 = this.add.sprite(game.config.width/2, game.config.height - borderUISize - borderPadding, 'p1Launcher').setOrigin(0.5, 0);
         this.p1Rocket = new Rocket(this, game.config.width/2, game.config.height - borderUISize - borderPadding, 'p1Firework').setOrigin(0.5, 0);
         this.p1Rocket.alpha = 0;
         this.p2Rocket = new Rocket(this, game.config.width/2, game.config.height - borderUISize - borderPadding, 'p2Firework').setOrigin(0.5, 0);
@@ -41,7 +43,7 @@ class Play extends Phaser.Scene {
 
         // add p2 launcher if necessary
         if(game.settings.multiplayer){
-            this.launcher2 = this.add.sprite(game.config.width/2, game.config.height - borderUISize - borderPadding, 'launcher').setOrigin(0.5, 0);
+            this.launcher2 = this.add.sprite(game.config.width/2, game.config.height - borderUISize - borderPadding, 'p2Launcher').setOrigin(0.5, 0);
         }
 
         // add Spaceships (x3)
@@ -68,9 +70,14 @@ class Play extends Phaser.Scene {
             frameRate: 30
         });
         this.anims.create({
-            key: 'light',
-            frames: this.anims.generateFrameNumbers('lightF', { start: 0, end: 4, first: 0}),
-            frameRate: 30
+            key: 'light1',
+            frames: this.anims.generateFrameNumbers('p1Light', { start: 0, end: 8, first: 0}),
+            frameRate: 15
+        });
+        this.anims.create({
+            key: 'light2',
+            frames: this.anims.generateFrameNumbers('p2Light', { start: 0, end: 8, first: 0}),
+            frameRate: 15
         });
 
         // initialize score
@@ -255,14 +262,16 @@ class Play extends Phaser.Scene {
       p1LaunchFirework() {
         // temporarily hide rocket   
         this.p1Rocket.alpha = 0;
+        this.launcher1.alpha = 0;
         this.p1Firing = true;
         this.p1Rocket.x = this.launcher1.x;
         this.p1Rocket.y = this.launcher1.y;                
         // create launch sprite
-        let launch = this.add.sprite(this.launcher1.x, this.launcher1.y, 'lightF').setOrigin(0.5, 0);
-        launch.anims.play('light');             // play light animation
+        let launch = this.add.sprite(this.launcher1.x, this.launcher1.y, 'p1Light').setOrigin(0.5, 0);
+        launch.anims.play('light1');             // play light animation
         launch.on('animationcomplete', () => {    // callback after anim completes
             this.p1Rocket.alpha = 1;  
+            this.launcher1.alpha = 1;
             this.p1Rocket.isFiring = true;
             this.p1Firing = false;
             this.p1Rocket.sfxRocket.play();
@@ -272,14 +281,16 @@ class Play extends Phaser.Scene {
         p2LaunchFirework() {
             // temporarily hide rocket   
             this.p2Rocket.alpha = 0;
+            this.launcher2.alpha = 0;
             this.p2Firing = true;
             this.p2Rocket.x = this.launcher2.x;
             this.p2Rocket.y = this.launcher2.y;                
             // create launch sprite
-            let launch = this.add.sprite(this.launcher2.x, this.launcher2.y, 'lightF').setOrigin(0.5, 0);
-            launch.anims.play('light');             // play light animation
+            let launch = this.add.sprite(this.launcher2.x, this.launcher2.y, 'p2Light').setOrigin(0.5, 0);
+            launch.anims.play('light2');             // play light animation
             launch.on('animationcomplete', () => {    // callback after anim completes
                 this.p2Rocket.alpha = 1;  
+                this.launcher2.alpha = 1;
                 this.p2Rocket.isFiring = true;
                 this.p2Firing = false;
                 this.p2Rocket.sfxRocket.play();
