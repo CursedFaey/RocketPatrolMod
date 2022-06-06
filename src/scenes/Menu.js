@@ -31,7 +31,7 @@ class Menu extends Phaser.Scene {
         }
         
         // show menu text
-        this.add.text(game.config.width/2, game.config.height/2 - borderUISize - borderPadding, 'ROCKET PATROL MOD', menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, game.config.height/2 - borderUISize - borderPadding, 'ROCKET PATROL MOD: Firecracker Chaos', menuConfig).setOrigin(0.5);
         this.add.text(game.config.width/2, game.config.height/2, 'Player 1: Use (A/D) to move & (W) to fire', menuConfig).setOrigin(0.5);
         this.add.text(game.config.width/2, game.config.height/2 + borderUISize + borderPadding, 'Player 2: Use (J/L) to move & (I) to fire', menuConfig).setOrigin(0.5);
         menuConfig.backgroundColor = '#00FF00';
