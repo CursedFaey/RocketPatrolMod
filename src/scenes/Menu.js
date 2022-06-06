@@ -27,10 +27,11 @@ class Menu extends Phaser.Scene {
         
         // show menu text
         this.add.text(game.config.width/2, game.config.height/2 - borderUISize - borderPadding, 'ROCKET PATROL MOD', menuConfig).setOrigin(0.5);
-        this.add.text(game.config.width/2, game.config.height/2, 'Use ←→ arrows to move & (F) to fire', menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, game.config.height/2, 'Player 1: Use (A/D) to move & (W) to fire', menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, game.config.height/2 + borderUISize + borderPadding, 'Player 2: Use (J/L) to move & (I) to fire', menuConfig).setOrigin(0.5);
         menuConfig.backgroundColor = '#00FF00';
         menuConfig.color = '#000';
-        this.add.text(game.config.width/2, game.config.height/2 + borderUISize + borderPadding, 'Press ← for Game or → for Test', menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, game.config.height/2 + borderUISize*2 + borderPadding*2, 'Press ← for 1 Player or → for 2 Players', menuConfig).setOrigin(0.5);
 
         // define keys
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
@@ -39,19 +40,21 @@ class Menu extends Phaser.Scene {
 
     update() {
         if (Phaser.Input.Keyboard.JustDown(keyLEFT)) {
-          // Novice mode
+          // single player mode
           game.settings = {
             spaceshipSpeed: 3,
-            gameTimer: 60000    
+            gameTimer: 10000,
+            multiplayer: false    
           }
           this.sound.play('sfx_select');
           this.scene.start("playScene");    
         }
         if (Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
-          // Expert mode
+          // multiplayer mode
           game.settings = {
             spaceshipSpeed: 3,
-            gameTimer: 10000    
+            gameTimer: 10000,
+            multiplayer: true    
           }
           this.sound.play('sfx_select');
           this.scene.start("playScene");    
