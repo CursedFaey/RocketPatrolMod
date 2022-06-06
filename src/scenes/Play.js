@@ -22,6 +22,7 @@ class Play extends Phaser.Scene {
         this.load.image('crowd1', './assets/crowd_01.png');
         this.load.image('crowd2', './assets/crowd_02.png');
         this.load.image('crowd3', './assets/crowd_03.png');
+        this.load.image('skyBack', './assets/firework_sky.png');
         // load spritesheet
         this.load.spritesheet('explosion', './assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
         this.load.spritesheet('p1Light', './assets/p1Launcher_light_sheet.png', {frameWidth: 64, frameHeight: 64, startFrame: 0, endFrame: 8});
@@ -33,11 +34,21 @@ class Play extends Phaser.Scene {
         this.load.spritesheet('explo2', './assets/explosion_02_sheet.png', {frameWidth: 96, frameHeight: 96, startFrame: 0, endFrame: 8});
         this.load.spritesheet('explo3', './assets/explosion_03_sheet.png', {frameWidth: 96, frameHeight: 96, startFrame: 0, endFrame: 8});
         this.load.spritesheet('explo4', './assets/explosion_04_sheet.png', {frameWidth: 96, frameHeight: 96, startFrame: 0, endFrame: 8});
+        this.load.spritesheet('sky', './assets/firework_sky_sheet.png', {frameWidth: 800, frameHeight: 640, startFrame: 0, endFrame: 8});
     }
 
     create() {
+        
+        this.anims.create({
+            key: 'back',
+            repeat: 100,
+            frames: this.anims.generateFrameNumbers('sky', { start: 0, end: 8, first: 0}),
+            frameRate: 10
+        });
         // place tile sprite
-        this.starfield = this.add.tileSprite(0, 0, 640, 480, 'starfield').setOrigin(0, 0);
+        this.back = this.add.sprite(0, 0, 'skyBack').setOrigin(0, 0);
+        this.skyBackground = this.add.sprite(0, 0, 'sky').setOrigin(0, 0);
+        this.skyBackground.anims.play('back');
 
         // add Spaceships (x3)
         this.ship01 = new Spaceship(this, game.config.width + borderUISize*6, borderUISize*4, 'kite3', 0, 30).setOrigin(0, 0);
@@ -49,12 +60,12 @@ class Play extends Phaser.Scene {
         this.crowd03 = new Spaceship(this, game.config.width, game.config.height - 85, 'crowd1', 0, 0).setOrigin(0,0);
         
         // green UI background
-        this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0x00FF00).setOrigin(0, 0);
+        //this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0x00FF00).setOrigin(0, 0);
         // white borders
-        this.add.rectangle(0, 0, game.config.width, borderUISize, 0xAAFFFF).setOrigin(0 ,0);
-        this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0xFFFFAA).setOrigin(0 ,0);
-        this.add.rectangle(0, 0, borderUISize, game.config.height, 0xFFAAFF).setOrigin(0 ,0);
-        this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0 ,0);
+        //this.add.rectangle(0, 0, game.config.width, borderUISize, 0xAAFFFF).setOrigin(0 ,0);
+        //this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0xFFFFAA).setOrigin(0 ,0);
+        //this.add.rectangle(0, 0, borderUISize, game.config.height, 0xFFAAFF).setOrigin(0 ,0);
+        //this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0 ,0);
 
         
         
@@ -142,8 +153,8 @@ class Play extends Phaser.Scene {
         let scoreConfig = {
             fontFamily: 'Courier',
             fontSize: '28px',
-            backgroundColor: '#F3B141',
-            color: '#843605',
+            backgroundColor: '#EB5234',
+            color: '#2E2522',
             align: 'right',
             padding: {
                 top: 5,
@@ -156,8 +167,8 @@ class Play extends Phaser.Scene {
         let scoreConfig2 = {
             fontFamily: 'Courier',
             fontSize: '28px',
-            backgroundColor: '#F3B141',
-            color: '#843605',
+            backgroundColor: '#3471EB',
+            color: '#2E2522',
             align: 'left',
             padding: {
                 top: 5,
@@ -167,9 +178,9 @@ class Play extends Phaser.Scene {
         }
 
         // player scores
-        this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, this.p1Score, scoreConfig);
+        this.scoreLeft = this.add.text(borderUISize, borderUISize, this.p1Score, scoreConfig);
         if(game.settings.multiplayer){
-            this.scoreRight = this.add.text((700 - borderUISize) - borderPadding, borderUISize + borderPadding*2, this.p2Score, scoreConfig2);
+            this.scoreRight = this.add.text((700 - borderUISize), borderUISize, this.p2Score, scoreConfig2);
         }
         // GAME OVER flag
         this.gameOver = false;
@@ -186,15 +197,20 @@ class Play extends Phaser.Scene {
             }
 
             this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart or ← to Menu', scoreConfig).setOrigin(0.5);
-            this.sound.get('background').stop();
+            this.game.sound.stopAll();
             this.gameOver = true;
         }, null, this);
     }
 
     update() {
         // check key input for restart / menu
+        if(this.gameOver){
+            this.sound.get('background').stop();
+        }
+        
         if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
             this.sound.play('sfx_select');
+            this.sound.play('background');
             this.scene.restart();
         }
 
@@ -228,6 +244,14 @@ class Play extends Phaser.Scene {
             } else if (keyL.isDown && this.launcher2.x <= game.config.width - borderUISize - this.launcher2.width) {
                 this.launcher2.x += this.launcherSpeed;
             }
+        }
+
+        if(this.p1Rocket.y <= borderUISize * 3 + borderPadding) {
+            this.explode(this.p1Rocket);
+        }
+
+        if(this.p2Rocket.y <= borderUISize * 3 + borderPadding) {
+            this.explode(this.p2Rocket);
         }
 
         if(!this.gameOver) {
@@ -299,6 +323,11 @@ class Play extends Phaser.Scene {
         ship.alpha = 0;                         
         // create explosion sprite at ship's position
         ship.reset();
+        this.explode(rocket);
+        ship.alpha = 1;
+      }
+
+      explode(rocket){
         // randomly create a firework explosion
         let explo = Math.floor(Math.random()*4);
         //console.log(explo);
@@ -307,7 +336,6 @@ class Play extends Phaser.Scene {
             rocket.reset();                           // reset ship position
             boom.anims.play('ex1');             // play explode animation
             boom.on('animationcomplete', () => {    // callback after anim completes
-                ship.alpha = 1;
                 boom.destroy();                       // remove explosion sprite
             });
             this.sound.play('sfx_ex1');
@@ -316,7 +344,6 @@ class Play extends Phaser.Scene {
             rocket.reset();                           // reset ship position
             boom.anims.play('ex2');             // play explode animation
             boom.on('animationcomplete', () => {    // callback after anim completes
-                ship.alpha = 1;
                 boom.destroy();                       // remove explosion sprite
             });
             this.sound.play('sfx_ex2');
@@ -325,7 +352,6 @@ class Play extends Phaser.Scene {
             rocket.reset();                           // reset ship position
             boom.anims.play('ex3');             // play explode animation
             boom.on('animationcomplete', () => {    // callback after anim completes
-                ship.alpha = 1;
                 boom.destroy();                       // remove explosion sprite
             });
             this.sound.play('sfx_ex3');
@@ -334,7 +360,6 @@ class Play extends Phaser.Scene {
             rocket.reset();                           // reset ship position
             boom.anims.play('ex4');             // play explode animation
             boom.on('animationcomplete', () => {    // callback after anim completes
-                ship.alpha = 1;
                 boom.destroy();                       // remove explosion sprite
             });
             this.sound.play('sfx_ex4');
