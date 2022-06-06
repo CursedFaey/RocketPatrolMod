@@ -12,7 +12,8 @@ class Play extends Phaser.Scene {
         this.load.image('rocket', './assets/rocket.png');
         this.load.image('spaceship', './assets/spaceship.png');
         this.load.image('starfield', './assets/starfield.png');
-        this.load.image('firework', './assets/firework.png');
+        this.load.image('p1Firework', './assets/p1Firework.png');
+        this.load.image('p2Firework', './assets/p2Firework.png');
         this.load.image('launcher', './assets/firework_launcher.png');
         // load spritesheet
         this.load.spritesheet('explosion', './assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
@@ -33,9 +34,9 @@ class Play extends Phaser.Scene {
 
         // add player rockets and p1 launcher
         this.launcher1 = this.add.sprite(game.config.width/2, game.config.height - borderUISize - borderPadding, 'launcher').setOrigin(0.5, 0);
-        this.p1Rocket = new Rocket(this, game.config.width/2, game.config.height - borderUISize - borderPadding, 'firework').setOrigin(0.5, 0);
+        this.p1Rocket = new Rocket(this, game.config.width/2, game.config.height - borderUISize - borderPadding, 'p1Firework').setOrigin(0.5, 0);
         this.p1Rocket.alpha = 0;
-        this.p2Rocket = new Rocket(this, game.config.width/2, game.config.height - borderUISize - borderPadding, 'firework').setOrigin(0.5, 0);
+        this.p2Rocket = new Rocket(this, game.config.width/2, game.config.height - borderUISize - borderPadding, 'p2Firework').setOrigin(0.5, 0);
         this.p2Rocket.alpha = 0;
 
         // add p2 launcher if necessary
